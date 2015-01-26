@@ -46,7 +46,7 @@ def working_file(fn, tokenized_text):
     f = io.open(fn, "w+", encoding="utf-8")
     for line in tokenized_text:
         for l in split(line):
-            if len(l) == 0:
+            if len(l.strip()) == 0:
                 continue
             f.write(l)
             f.write(u"\n")
