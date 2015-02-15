@@ -112,8 +112,6 @@ def prepare_tweet(lines, curr_line):
 def perform_tweet(tweet,api):
     api.update_status(status=tweet)
 
-
-
 if __name__ == "__main__":
     args = handle_command_line()
     api = (TwythonHelper(args.keyfile)).api

@@ -11,6 +11,8 @@ def score(c,n,l):
         return sys.maxint
     elif c == ",":
         return l * 1.18
+    elif c == "'":
+        return min(139,l)
     elif c in string.punctuation:
         return l * 1.15
     elif c in string.whitespace:
