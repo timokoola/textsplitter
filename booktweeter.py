@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 from __future__ import print_function
 from twython import Twython
 import json
 import argparse
 import io
-import sys
+import sys, os
 import os.path 
 from datetime import datetime, timedelta
 from email.utils import parsedate_tz
@@ -104,13 +105,17 @@ def check_for_problems(api, finished=False, args=None):
 def prepare_tweet(lines, curr_line):
     line = lines[curr_line].strip()
     line = line.replace("<br/>", "\n")
+    rerun = line.find("<cont/>") != -1
+    line = line.replace("<cont/>", "")
     bio = ""
     if line.startswith("* "):
         bio = line[2:]
-    return (bio, line)
+    return (bio, line, rerun)
 
-def perform_tweet(tweet,api):
+def perform_tweet(tweet,api, rerun):
     api.update_status(status=tweet)
+    if rerun:
+        os.execv(__file__,sys.argv)
 
 if __name__ == "__main__":
     args = handle_command_line()
@@ -120,6 +125,6 @@ if __name__ == "__main__":
     (lines, linecount) = open_working_file(args.workingfile)
     (curr_line, finished)  = current_line(args.line, args.progressfile, linecount)
     check_for_problems(api, finished, args)
-    (bio, tweet) = prepare_tweet(lines,curr_line)
+    (bio, tweet, rerun) = prepare_tweet(lines,curr_line)
     update_bio(bio, api)
-    perform_tweet(tweet, api)
+    perform_tweet(tweet, api, rerun)

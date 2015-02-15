@@ -10,31 +10,33 @@ def score(c,n,l):
     elif c == "\n" and n == "\n":
         return sys.maxint
     elif c == ",":
-        return l * 1.18
+        return l * 1.59
     elif c == "'":
         return min(139,l)
     elif c in string.punctuation:
-        return l * 1.15
+        return l * 1.18
     elif c in string.whitespace:
         return l * 1.03
     else:
         return min(139,l)
 
 def div_text(text):
+    if len(text) < 140 and text.find("\n\n") == -1:
+        return (text, "")
     zpd = zip(text, "a" +text, xrange(len(text)))
     cmap = map(lambda x: score(x[0],x[1],x[2]) ,zpd)
     index = cmap.index(max(cmap))
-    return (text[:index+1], text[index+1:])
+    return (text[:index+1] + "<cont/>", text[index+1:])
 
 def split(t):
-    if len(t) < 140:
-        return [t]
+    if len(t) < 140 and t.find("\n\n") == -1:
+        return [t.strip().replace("\n"," ")]
     text = t
     result = []
     while len(text) > 0:
         (extracted, text) = div_text(text)
         clean = extracted.strip().replace("\n"," ")
-        assert(len(clean) <= 140)
+        assert(len(clean.replace("<cont/>", "")) <= 140)
         result.append(clean)
     return result
 
