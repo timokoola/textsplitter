@@ -35,6 +35,7 @@ def handle_command_line():
                         help="credentials of the twitter accounts", default="test.keys")
     parser.add_argument("-p", "--progressfile",
                         help="which line are we at?", default="line.txt")
+    parser.add_argument("-b", "--bio", help="Update bio on the go?", default=True, type=bool)
     parser.add_argument("-l", "--line",
                         help="tweet line number", type=int, default=-1)
 
@@ -126,5 +127,6 @@ if __name__ == "__main__":
     (curr_line, finished)  = current_line(args.line, args.progressfile, linecount)
     check_for_problems(api, finished, args)
     (bio, tweet, rerun) = prepare_tweet(lines,curr_line)
-    update_bio(bio, api)
+    if args.bio:
+        update_bio(bio, api)
     perform_tweet(tweet, api, rerun)
